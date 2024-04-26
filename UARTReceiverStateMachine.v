@@ -58,10 +58,6 @@ module UARTReceiverStateMachine(
 		endcase
 	end
 	
-	reg [8:0] Drs1; //pipe
-	always@(posedge clk)
-		Drs1 <= Drs;
-	
 	assign Dout = (next_state==Stop)?Drs:9'd0; //if condition is met, data and parity bit which was stored in Drs is sent to the parity checker, else nothing gets sent.
 	assign Mreset = reset||state==Error||(state==Stop&&next_state==Idle); //resets the state machine
 		
