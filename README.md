@@ -4,11 +4,13 @@ The UART transmitter module takes 8 parallel data bits from the user, then trans
 
 https://github.com/SimNabong/UART-Transmitter-and-Receiver-with-Verilog/blob/main/DaPicture.jpg
 
-
+This Transmitter is a Parallel In Serial Out
 The Transmitter module:
 Top Level Entity module:Transmitter_BaudRate.v
 -included modules: BaudControl.v and the UART_Transmitter.v
 
+
+The Receiver is a Serial In Parallel Out
 The Receiver module:
 Top Level Entity module: UARTReceiver.v
 -included modules: BaudControl.v , Eight_Bit_Parity_Checker.v, and UARTReceiverStateMachine.v
