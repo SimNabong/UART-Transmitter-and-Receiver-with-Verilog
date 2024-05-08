@@ -43,7 +43,6 @@ module UARTReceiverStateMachine(
 	
 	always@(posedge clk)begin //places the data bits and the parity bit to the temporary register
 		case(next_state)
-			Start: Drs <= 9'd0;
 			d0:Drs[0] <= Rx_in;
 			d1:Drs[1] <= Rx_in;
 			d2:Drs[2] <= Rx_in;
@@ -58,7 +57,8 @@ module UARTReceiverStateMachine(
 		endcase
 	end
 	
-	assign Dout = (next_state==Stop)?Drs:9'd0; //if condition is met, data and parity bit which was stored in Drs is sent to the parity checker, else nothing gets sent.
+
+	assign Dout = (next_state==Stop)?Drs:Dout; //if condition is met, data and parity bit which was stored in Drs is sent to the parity checker, else nothing gets sent.
 	assign Mreset = reset||state==Error||(state==Stop&&next_state==Idle); //resets the state machine
 		
 endmodule
