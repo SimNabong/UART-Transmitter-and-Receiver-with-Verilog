@@ -42,19 +42,22 @@ module UARTReceiverStateMachine(
 	
 	
 	always@(posedge clk)begin //places the data bits and the parity bit to the temporary register
-		case(next_state)
-			d0:Drs[0] <= Rx_in;
-			d1:Drs[1] <= Rx_in;
-			d2:Drs[2] <= Rx_in;
-			d3:Drs[3] <= Rx_in;
-			d4:Drs[4] <= Rx_in;
-			d5:Drs[5] <= Rx_in;
-			d6:Drs[6] <= Rx_in;
-			d7:Drs[7] <= Rx_in;
-			ParityB:Drs[8] <= Rx_in;
-			Error: Drs <= 9'd0;
-			default: Drs <= Drs;
-		endcase
+		if(reset)
+			Drs <= 9'd0;
+		else
+			case(next_state)
+				d0:Drs[0] <= Rx_in;
+				d1:Drs[1] <= Rx_in;
+				d2:Drs[2] <= Rx_in;
+				d3:Drs[3] <= Rx_in;
+				d4:Drs[4] <= Rx_in;
+				d5:Drs[5] <= Rx_in;
+				d6:Drs[6] <= Rx_in;
+				d7:Drs[7] <= Rx_in;
+				ParityB:Drs[8] <= Rx_in;
+				Error: Drs <= 9'd0;
+				default: Drs <= Drs;
+			endcase
 	end
 	
 
