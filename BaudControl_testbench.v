@@ -3,9 +3,9 @@
 module BaudControl_testbench();
 	reg clk; //50MHz clk
 	reg [2:0]BC; //User Input Baud controls
-	wire Rx_clk; //Clk with modified BPS
+	wire ena; //Clk with modified BPS
 
-	BaudControl BaudControlInst(.clk(clk), .BC(BC), .Rx_clk(Rx_clk));
+	BaudControl BaudControlInst(.clk(clk), .BC(BC), .ena(ena));
 	
 	
 	initial begin
@@ -29,7 +29,7 @@ module BaudControl_testbench();
 	end
 	
 	initial begin
-		$monitor("simtime=%g, clk=%b, BC=%b, Rx_clk=%b,", $time, clk, BC, Rx_clk);
+		$monitor("simtime=%g, clk=%b, BC=%b, ena=%b,", $time, clk, BC, ena);
 	end 
 	
 
