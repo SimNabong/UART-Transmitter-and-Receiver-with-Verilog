@@ -2,6 +2,7 @@
 module UARTReceiverStateMachine(
 	input Rx_in, //received UART data from the Master
 	input clk, //clk that will have a modified rate
+	input ena, //has a controlled baud rate
 	input reset, //synchronous reset
 	output [8:0] Dout, //9-Bits sent to the P-checker
 	output wire Mreset //sends a bit to the master to reset the masters(transmitters) signal
@@ -15,9 +16,9 @@ module UARTReceiverStateMachine(
 	
 	
 	always@(posedge clk) begin //updates the state machine
-		if(Mreset)
+		if(Mreset && ena)
 			state <= Idle;
-		else
+		else if(ena)
 			state <= next_state;					
 	end
 	
@@ -42,9 +43,9 @@ module UARTReceiverStateMachine(
 	
 	
 	always@(posedge clk)begin //places the data bits and the parity bit to the temporary register
-		if(reset)
+		if(reset && ena)
 			Drs <= 9'd0;
-		else
+		else if(ena)
 			case(next_state)
 				d0:Drs[0] <= Rx_in;
 				d1:Drs[1] <= Rx_in;
@@ -60,8 +61,16 @@ module UARTReceiverStateMachine(
 			endcase
 	end
 	
-
-	assign Dout = (next_state==Stop)?Drs:Dout; //if condition is met, data and parity bit which was stored in Drs is sent to the parity checker, else nothing gets sent.
+	reg [8:0] Doutr;
+	
+	always@(posedge clk)begin
+		if(next_state==Stop && ena) //if condition is met, data and parity bit which was stored in Drs is sent to the parity checker
+			Doutr <= Drs;
+		else if(next_state==Error && ena)  //else if error, then gets zero'd
+			Doutr <= 9'd0;
+	end
+	
+	assign Dout = Doutr; 
 	assign Mreset = reset||state==Error||(state==Stop&&next_state==Idle); //resets the state machine
 		
 endmodule
