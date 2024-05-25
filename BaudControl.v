@@ -1,7 +1,7 @@
 module BaudControl(
 	input clk, //50MHz clk//User Input Baud controls
 	input [2:0]BC, //baud controller conditions
-	output reg Rx_clk //Clk with modified BPS
+	output reg ena //Clk with modified BPS
 );
 
 	//top 5 most used baud rates
@@ -34,10 +34,12 @@ module BaudControl(
 	
 	always@(*) begin //toggles Txo_clk
 		if(Cntr==Max_Cntr1)
-			Rx_clk <= 1'b1;
+			ena <= 1'b1;
 		else
-			Rx_clk <= 1'b0;
+			ena <= 1'b0;
 	end
+	
+	
 	
 	
 endmodule
