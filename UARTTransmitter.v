@@ -3,7 +3,7 @@ module UARTTransmitter(
 	input clk, //50Mhz
 	input PbitEna, //if high then Parity bit is checked and sent
 	input Rxi, //receiver that receives the reset signal from the UART receiver
-	output ena, //not connected
+	//output ena, //not connected
 	input [7:0]UI, //User data inputs
 	input [2:0]BC, //baud control can include 3 more baud rate selections
 	output Txo	 //Transmitted UART signal
@@ -20,7 +20,7 @@ module UARTTransmitter(
 	
 	wire enaw; //modified clk rate for the transmitter	
 	
-	assign ena = enaw;
+	//assign ena = enaw;
 
 	
 	BaudControl BaudControlInst(.clk(clk), .BC(BC), .ena(enaw));
