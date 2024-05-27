@@ -7,7 +7,8 @@ module UARTReceiver_testbench();
 	reg [2:0]BC; //user baud rate control (~B3&~B2&B1)?9'd217:(~B3&B2&~B1)?9'd109:(~B3&B2&B1)?9'd72:(B3&~B2&~B1)?9'd36:9'd434;
 	wire [7:0]DataOut; //8 output bits based on the transmitters input
 	wire Mreset; //sends a reset signal to the transmitter
-	//wire Rx_clkw; //add or remove and for testbench purpose only
+	reg PbitEna;
+	wire ena; //add or remove and for testbench purpose only
 	
 /*module UARTReceiver(
 	input Rx_in, //Receiver Input from Transmitter
@@ -16,7 +17,7 @@ module UARTReceiver_testbench();
 	input [2:0]BC, //user baud rate control (~B3&~B2&B1)?9'd217:(~B3&B2&~B1)?9'd109:(~B3&B2&B1)?9'd72:(B3&~B2&~B1)?9'd36:9'd434;
 	output [7:0]DataOut, //8 output bits based on the transmitters input
 	output Mreset, //sends a reset signal to the transmitter
-	output wire Rx_clkw //add or remove and for testbench purpose only
+	output wire ena //add or remove and for testbench purpose only
 );*/
 		
 
@@ -24,22 +25,24 @@ module UARTReceiver_testbench();
 	UARTReceiver UARTReceiverInstance(
 		.Rx_in(Rx_in),
 		.clk(clk),
+		.PbitEna(PbitEna),
 		.reset(reset),
 		.BC(BC),
 		.DataOut(DataOut),
-		.Mreset(Mreset)
-		//.Rx_clkw(Rx_clkw)
+		.Mreset(Mreset),
+		.ena(ena)
 	);
 	
 	initial begin
 		clk = 0; // Set the clock input to 0
-		forever #1 clk = ~clk; // Toggle the clock every T/7400 units of time
+		forever #1 clk = ~clk; // Toggle the clock every T/72 units of time
 	end
 	
 	initial begin
 		Rx_in = 1;     
 		reset = 0;
 		BC = 3'd0;
+		PbitEna = 1'b1;
 		
 		#850 Rx_in=1; //I
 		#850 Rx_in=1; //I
@@ -108,68 +111,45 @@ module UARTReceiver_testbench();
 		#72 reset=0;
 		
 		
-
-		#888 Rx_in=0; //I
-		#72 Rx_in=0; //S
-		#72 Rx_in=0; //D0 
-		#72 Rx_in=0; //D1 
-		#72 Rx_in=0; //D2
-		#72 Rx_in=0; //D3 
-		#72 Rx_in=0; //D4 
-		#72 Rx_in=0; //D5 
-		#72 Rx_in=0; //D6 
-		#72 Rx_in=0; //D7 
-		#72 Rx_in=0; //P8 
-		#1000 Rx_in=1; //Sb 
+		#72 PbitEna=1'b0; //Sb
 
 		
-		/*wrong even parity
-		#7400 Rx_in=1; //I 
-		#7400 Rx_in=0; //S 110839
-		#7400 Rx_in=1; //D0 
-		#7400 Rx_in=1; //D1 
-		#7400 Rx_in=1; //D2 133235
-		#7400 Rx_in=0; //D3 
-		#7400 Rx_in=0; //D4 
-		#7400 Rx_in=0; //D5 155441
-		#7400 Rx_in=1; //D6 16282911
-		#7400 Rx_in=0; //D7 
-		#7400 Rx_in=1; //P8 111
-		#7400 Rx_in=1; //Sb 
-		#7400 Rx_in=1; //I 
+		//wrong even parity
+		#72 Rx_in=1;  //I 
+		#72 Rx_in=0; //S 110839
+		#72 Rx_in=1; //D0 
+		#72 Rx_in=1; //D1 
+		#72 Rx_in=1; //D2 133235
+		#72 Rx_in=0; //D3 
+		#72 Rx_in=0; //D4 
+		#72 Rx_in=0; //D5 155441
+		#72 Rx_in=1; //D6 16282911
+		#72 Rx_in=0; //D7 
+		#72 Rx_in=1; //P8 111
+		#72 Rx_in=1; //Sb 
+		#72 Rx_in=1; //I 
 		
 
 		//wrong odd parity
-		#7400 Rx_in=1; //I 
-		#7400 Rx_in=0; //S 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=0; //D 
-		#7400 Rx_in=0; //D 
-		#7400 Rx_in=0; //D 
-		#7400 Rx_in=0; //P 
-		#7400 Rx_in=1; //Sb 
-		#7400 Rx_in=1; //I 
+		#72 Rx_in=1; //I 
+		#72 Rx_in=0; //S 
+		#72 Rx_in=1; //D 
+		#72 Rx_in=1; //D 
+		#72 Rx_in=1; //D 
+		#72 Rx_in=1; //D 
+		#72 Rx_in=1; //D 
+		#72 Rx_in=0; //D 
+		#72 Rx_in=0; //D 
+		#72 Rx_in=0; //D 
+		#72 Rx_in=0; //P 
+		#72 Rx_in=1; //Sb 
+		#72 Rx_in=1; //I 
 		
 		//right odd parity
 		
-		#7400 Rx_in=1; //I 
-		#7400 Rx_in=0; //S 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D 
-		#7400 Rx_in=1; //D
-		#7400 Rx_in=1; //D
-		#7400 Rx_in=0; //D 
-		#7400 Rx_in=0; //D 
-		#7400 Rx_in=0; //D
-		#7400 Rx_in=1; //P 
-		#7400 Rx_in=1; //Sb 
-		#7400 Rx_in=1; //I
-		*/
+
+		#1000 Rx_in=0; //I
+
 		
 		#0 $finish;
 		
@@ -179,7 +159,7 @@ module UARTReceiver_testbench();
 	
 	
 	initial begin
-		$monitor("simtime=%g, clk=%b, BC=%b, Rx_in=%b, reset=%b, Mreset=%b, DataOut=%b", $time,clk,BC,Rx_in,reset,Mreset,DataOut);
+		$monitor("simtime=%g, clk=%b, BC=%b, Rx_in=%b, ena=%b, reset=%b, Mreset=%b, DataOut=%b", $time,clk,BC,Rx_in,ena,reset,Mreset,DataOut);
 	end
 	
 
